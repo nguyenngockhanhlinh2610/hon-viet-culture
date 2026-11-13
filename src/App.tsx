@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
@@ -12,6 +12,7 @@ import { FavoritesPage } from './pages/FavoritesPage';
 import { AccountPage } from './pages/AccountPage';
 import { AiHeritageAssistant } from './components/chat/AiHeritageAssistant';
 import { storageService } from './services/storageService';
+import { supabaseService } from './services/supabaseService';
 import {
   Booking,
   FavoriteCategory,
@@ -34,38 +35,124 @@ export function App() {
     storageService.getBookings()
   );
   const [user, setUser] = useState<UserProfile | null>(() =>
-    storageService.getUser()
+    supabaseService.isEnabled() ? null : storageService.getUser()
   );
+
+  // Sync session & cloud data from Supabase if configured
+  useEffect(() => {
+    if (!supabaseService.isEnabled()) return;
+
+    supabaseService.getSessionUser().then(async (sessionUser) => {
+      if (!sessionUser) return;
+      setUser(sessionUser);
+      const [cloudFavs, cloudStamps, cloudBookings] = await Promise.all([
+        supabaseService.fetchFavorites(sessionUser.id),
+        supabaseService.fetchUnlockedStamps(sessionUser.id),
+        supabaseService.fetchBookings(sessionUser.id),
+      ]);
+      setFavorites(cloudFavs);
+      setUnlockedStamps(cloudStamps);
+      setBookings(cloudBookings);
+    });
+  }, []);
 
   const isFavorite = (id: string, category: FavoriteCategory) =>
     favorites.some((f) => f.id === id && f.category === category);
 
-  const handleToggleFavorite = (id: string, category: FavoriteCategory) => {
+  const handleToggleFavorite = async (id: string, category: FavoriteCategory) => {
+    const currentlyFav = isFavorite(id, category);
     setFavorites(storageService.toggleFavorite(id, category));
+    if (user && supabaseService.isEnabled()) {
+      await supabaseService.toggleFavorite(user.id, id, category, currentlyFav);
+    }
   };
 
-  const handleUnlockStamp = (stampId: string) => {
+  const handleUnlockStamp = async (stampId: string) => {
     setUnlockedStamps(storageService.unlockStamp(stampId));
+    if (user && supabaseService.isEnabled()) {
+      await supabaseService.unlockStamp(user.id, stampId);
+    }
   };
 
-  const handleCreateBooking = (
+  const handleCreateBooking = async (
     input: Omit<Booking, 'id' | 'status' | 'createdAt'>
   ) => {
     setBookings(storageService.createBooking(input));
+    if (user && supabaseService.isEnabled()) {
+      await supabaseService.createBooking(user.id, input);
+      const refreshed = await supabaseService.fetchBookings(user.id);
+      setBookings(refreshed);
+    }
   };
 
-  const handleCancelBooking = (bookingId: string) => {
+  const handleCancelBooking = async (bookingId: string) => {
+    const target = bookings.find((b) => b.id === bookingId);
+    if (!target) return 'Không tìm thấy lịch hẹn.';
+    const check = storageService.canCancelBooking(target.date);
+    if (!check.allowed) {
+      return 'Lịch hẹn cận ngày (dưới 5 ngày / 120 giờ) không thể hủy trực tuyến.';
+    }
+
+    if (user && supabaseService.isEnabled()) {
+      await supabaseService.cancelBooking(user.id, bookingId);
+      setBookings(await supabaseService.fetchBookings(user.id));
+      return undefined;
+    }
+
     const res = storageService.cancelBooking(bookingId);
     setBookings(res.bookings);
     return res.error;
   };
 
-  const handleLogin = (fullName: string, emailOrPhone: string) => {
-    setUser(storageService.loginUser(fullName, emailOrPhone));
+  const handleAuthSubmit = async (
+    mode: 'login' | 'register',
+    fullName: string,
+    email: string,
+    password: string
+  ): Promise<{ error?: string; info?: string }> => {
+    if (!supabaseService.isEnabled()) {
+      const localUser = storageService.loginUser(
+        mode === 'register' ? fullName : email.split('@')[0],
+        email
+      );
+      setUser(localUser);
+      return {};
+    }
+
+    if (mode === 'register') {
+      const res = await supabaseService.signUp(fullName, email, password);
+      if (res.error) return { error: res.error };
+      if (res.needsEmailConfirm) {
+        return {
+          info: 'Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản rồi đăng nhập.',
+        };
+      }
+      if (res.user) setUser(res.user);
+      return {};
+    }
+
+    const res = await supabaseService.signIn(email, password);
+    if (res.error) return { error: res.error };
+    if (res.user) {
+      setUser(res.user);
+      const [cloudFavs, cloudStamps, cloudBookings] = await Promise.all([
+        supabaseService.fetchFavorites(res.user.id),
+        supabaseService.fetchUnlockedStamps(res.user.id),
+        supabaseService.fetchBookings(res.user.id),
+      ]);
+      setFavorites(cloudFavs);
+      setUnlockedStamps(cloudStamps);
+      setBookings(cloudBookings);
+    }
+    return {};
   };
 
-  const handleLogout = () => {
-    storageService.logoutUser();
+  const handleLogout = async () => {
+    if (supabaseService.isEnabled()) {
+      await supabaseService.signOut();
+    } else {
+      storageService.logoutUser();
+    }
     setUser(null);
   };
 
@@ -114,7 +201,6 @@ export function App() {
             defaultCustomerName={user?.fullName}
           />
         )}
-        {activeSection === 'blog' && <BlogPage />}
         {activeSection === 'passport' && (
           <PassportPage
             unlockedIds={unlockedStamps}
@@ -123,6 +209,7 @@ export function App() {
             onRequireLogin={() => setActiveSection('account')}
           />
         )}
+        {activeSection === 'blog' && <BlogPage />}
         {activeSection === 'favorites' && (
           <FavoritesPage
             favorites={favorites}
@@ -134,7 +221,7 @@ export function App() {
           <AccountPage
             user={user}
             bookings={bookings}
-            onLogin={handleLogin}
+            onAuthSubmit={handleAuthSubmit}
             onLogout={handleLogout}
             onCancelBooking={handleCancelBooking}
           />

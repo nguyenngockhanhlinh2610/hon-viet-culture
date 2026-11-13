@@ -2,48 +2,68 @@ import React, { useState } from 'react';
 import { CalendarX2, LogOut, UserCheck } from 'lucide-react';
 import { Booking, UserProfile } from '../types';
 import { storageService } from '../services/storageService';
+import { isSupabaseConfigured } from '../lib/supabaseClient';
 
 interface AccountPageProps {
   user: UserProfile | null;
   bookings: Booking[];
-  onLogin: (fullName: string, emailOrPhone: string) => void;
-  onLogout: () => void;
-  onCancelBooking: (bookingId: string) => string | undefined;
+  onAuthSubmit: (
+    mode: 'login' | 'register',
+    fullName: string,
+    email: string,
+    password: string
+  ) => Promise<{ error?: string; info?: string }>;
+  onLogout: () => Promise<void> | void;
+  onCancelBooking: (bookingId: string) => Promise<string | undefined> | string | undefined;
 }
 
 export const AccountPage: React.FC<AccountPageProps> = ({
   user,
   bookings,
-  onLogin,
+  onAuthSubmit,
   onLogout,
   onCancelBooking,
 }) => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [fullName, setFullName] = useState('');
-  const [emailOrPhone, setEmailOrPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [authInfo, setAuthInfo] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const [cancelError, setCancelError] = useState('');
 
-  const handleAuthSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!emailOrPhone.trim() || !password.trim()) return;
-    onLogin(mode === 'register' ? fullName : emailOrPhone.split('@')[0], emailOrPhone);
+    if (!email.trim() || !password.trim()) return;
+    setAuthError('');
+    setAuthInfo('');
+    setSubmitting(true);
+    const res = await onAuthSubmit(mode, fullName, email, password);
+    setSubmitting(false);
+    if (res.error) setAuthError(res.error);
+    if (res.info) setAuthInfo(res.info);
   };
 
-  const handleCancel = (bookingId: string) => {
-    const err = onCancelBooking(bookingId);
+  const handleCancel = async (bookingId: string) => {
+    const err = await onCancelBooking(bookingId);
     setCancelError(err || '');
   };
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl font-bold text-heritage-burgundy">
-          Tài khoản Cá nhân &amp; Lịch Trải nghiệm
-        </h1>
-        <p className="text-sm text-heritage-muted mt-1">
-          Quản lý hồ sơ săn dấu Hộ chiếu và lịch hẹn workshop làng nghề.
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h1 className="font-serif text-3xl font-bold text-heritage-burgundy">
+            Tài khoản Cá nhân &amp; Lịch Trải nghiệm
+          </h1>
+          <p className="text-sm text-heritage-muted mt-1">
+            Quản lý hồ sơ săn dấu Hộ chiếu và lịch hẹn workshop làng nghề.
+          </p>
+        </div>
+        <span className="text-[11px] px-2.5 py-1 rounded-full bg-heritage-paper border border-heritage-gold/40 text-heritage-burgundy font-medium">
+          {isSupabaseConfigured ? 'Đồng bộ Supabase Cloud' : 'Lưu trữ Local'}
+        </span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -72,11 +92,15 @@ export const AccountPage: React.FC<AccountPageProps> = ({
               </button>
             </div>
           ) : (
-            <form onSubmit={handleAuthSubmit} className="space-y-3.5">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               <div className="flex gap-2 border-b border-heritage-gold/25 pb-2">
                 <button
                   type="button"
-                  onClick={() => setMode('login')}
+                  onClick={() => {
+                    setMode('login');
+                    setAuthError('');
+                    setAuthInfo('');
+                  }}
                   className={`flex-1 py-1.5 text-sm font-semibold rounded-lg ${
                     mode === 'login'
                       ? 'bg-heritage-burgundy text-white'
@@ -87,7 +111,11 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setMode('register')}
+                  onClick={() => {
+                    setMode('register');
+                    setAuthError('');
+                    setAuthInfo('');
+                  }}
                   className={`flex-1 py-1.5 text-sm font-semibold rounded-lg ${
                     mode === 'register'
                       ? 'bg-heritage-burgundy text-white'
@@ -115,14 +143,12 @@ export const AccountPage: React.FC<AccountPageProps> = ({
               )}
 
               <div>
-                <label className="block text-xs font-medium mb-1">
-                  Email hoặc Số điện thoại
-                </label>
+                <label className="block text-xs font-medium mb-1">Email</label>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  value={emailOrPhone}
-                  onChange={(e) => setEmailOrPhone(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="dukhach@honviet.vn"
                   className="w-full px-3 py-2 rounded-lg border border-heritage-gold/40 text-sm"
                 />
@@ -130,11 +156,12 @@ export const AccountPage: React.FC<AccountPageProps> = ({
 
               <div>
                 <label className="block text-xs font-medium mb-1">
-                  Mật khẩu
+                  Mật khẩu (tối thiểu 6 ký tự)
                 </label>
                 <input
                   type="password"
                   required
+                  minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
@@ -142,11 +169,28 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                 />
               </div>
 
+              {authError && (
+                <div className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
+                  {authError}
+                </div>
+              )}
+
+              {authInfo && (
+                <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-800">
+                  {authInfo}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full py-2.5 rounded-xl bg-heritage-burgundy text-white text-sm font-semibold hover:bg-heritage-burgundyDark"
+                disabled={submitting}
+                className="w-full py-2.5 rounded-xl bg-heritage-burgundy text-white text-sm font-semibold hover:bg-heritage-burgundyDark disabled:opacity-60"
               >
-                {mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
+                {submitting
+                  ? 'Đang xử lý...'
+                  : mode === 'login'
+                  ? 'Đăng nhập'
+                  : 'Tạo tài khoản'}
               </button>
             </form>
           )}
