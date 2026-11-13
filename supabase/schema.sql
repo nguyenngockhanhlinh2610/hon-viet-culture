@@ -30,7 +30,8 @@ create table if not exists public.bookings (
   guests integer not null check (guests >= 1),
   customer_name text not null,
   customer_phone text not null,
-  status text not null default 'confirmed' check (status in ('confirmed', 'cancelled')),
+  approval_token text,
+  status text not null default 'pending' check (status in ('pending', 'confirmed', 'rejected', 'cancelled')),
   created_at timestamptz default now()
 );
 

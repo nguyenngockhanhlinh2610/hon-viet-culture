@@ -63,7 +63,7 @@ export const WorkshopsPage: React.FC<WorkshopsPageProps> = ({
     });
 
     setSuccessMsg(
-      `Đã đặt lịch thành công "${bookingWorkshop.name}" ngày ${date} lúc ${timeSlot}! Xem trong mục Tài khoản.`
+      `Đã gửi yêu cầu đặt lịch "${bookingWorkshop.name}" ngày ${date} lúc ${timeSlot}! Lịch hẹn đang ở trạng thái Chờ xác nhận.`
     );
     setBookingWorkshop(null);
   };

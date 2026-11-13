@@ -77,11 +77,36 @@ export function App() {
   const handleCreateBooking = async (
     input: Omit<Booking, 'id' | 'status' | 'createdAt'>
   ) => {
-    setBookings(storageService.createBooking(input));
+    const approvalToken =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+
+    setBookings(storageService.createBooking({ ...input, approvalToken }));
+
     if (user && supabaseService.isEnabled()) {
-      await supabaseService.createBooking(user.id, input);
+      await supabaseService.createBooking(user.id, { ...input, approvalToken });
       const refreshed = await supabaseService.fetchBookings(user.id);
       setBookings(refreshed);
+    }
+
+    // Gửi email xác nhận về Admin qua Vercel Serverless Function
+    try {
+      await fetch('/api/send-booking-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workshopName: input.workshopName,
+          date: input.date,
+          timeSlot: input.timeSlot,
+          guests: input.guests,
+          customerName: input.customerName,
+          customerPhone: input.customerPhone,
+          approvalToken,
+        }),
+      });
+    } catch {
+      // Không làm gián đoạn trải nghiệm nếu đang chạy ở local chưa có /api
     }
   };
 

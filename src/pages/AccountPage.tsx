@@ -235,10 +235,20 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                           className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             bk.status === 'confirmed'
                               ? 'bg-emerald-100 text-emerald-800'
+                              : bk.status === 'pending'
+                              ? 'bg-amber-100 text-amber-800'
+                              : bk.status === 'rejected'
+                              ? 'bg-red-100 text-red-800'
                               : 'bg-gray-200 text-gray-700'
                           }`}
                         >
-                          {bk.status === 'confirmed' ? 'Đã xác nhận' : 'Đã hủy'}
+                          {bk.status === 'confirmed'
+                            ? 'Đã xác nhận'
+                            : bk.status === 'pending'
+                            ? 'Chờ xác nhận'
+                            : bk.status === 'rejected'
+                            ? 'Từ chối'
+                            : 'Đã hủy'}
                         </span>
                       </div>
                       <p className="text-xs text-heritage-muted mt-1">
@@ -247,7 +257,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                       </p>
                     </div>
 
-                    {bk.status === 'confirmed' && (
+                    {(bk.status === 'confirmed' || bk.status === 'pending') && (
                       <button
                         type="button"
                         disabled={!check.allowed}

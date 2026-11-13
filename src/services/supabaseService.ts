@@ -164,14 +164,15 @@ export const supabaseService = {
       guests: row.guests as number,
       customerName: row.customer_name as string,
       customerPhone: row.customer_phone as string,
-      status: row.status as 'confirmed' | 'cancelled',
+      status: row.status as Booking['status'],
+      approvalToken: (row.approval_token as string | null) || undefined,
       createdAt: row.created_at as string,
     }));
   },
 
   async createBooking(
     userId: string,
-    input: Omit<Booking, 'id' | 'status' | 'createdAt'>
+    input: Omit<Booking, 'id' | 'status' | 'createdAt'> & { approvalToken: string }
   ): Promise<void> {
     if (!supabase) return;
     await supabase.from('bookings').insert({
@@ -184,7 +185,8 @@ export const supabaseService = {
       guests: input.guests,
       customer_name: input.customerName,
       customer_phone: input.customerPhone,
-      status: 'confirmed',
+      approval_token: input.approvalToken,
+      status: 'pending',
     });
   },
 

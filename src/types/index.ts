@@ -120,7 +120,8 @@ export interface Booking {
   guests: number;
   customerName: string;
   customerPhone: string;
-  status: 'confirmed' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'rejected' | 'cancelled';
+  approvalToken?: string;
   createdAt: string;
 }
 

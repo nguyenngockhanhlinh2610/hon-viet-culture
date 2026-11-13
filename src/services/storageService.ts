@@ -61,7 +61,7 @@ export const storageService = {
     const next: Booking = {
       ...input,
       id: `bk-${Date.now()}`,
-      status: 'confirmed',
+      status: 'pending',
       createdAt: new Date().toISOString(),
     };
     const updated = [next, ...current];
