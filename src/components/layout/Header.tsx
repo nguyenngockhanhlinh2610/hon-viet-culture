@@ -25,8 +25,8 @@ const NAV_ITEMS: { id: NavSection; label: string }[] = [
   { id: 'festivals', label: 'Lễ hội' },
   { id: 'specialties', label: 'Đặc sản' },
   { id: 'workshops', label: 'Trải nghiệm' },
-  { id: 'blog', label: 'Blog' },
   { id: 'passport', label: 'Hộ chiếu' },
+  { id: 'blog', label: 'Blog' },
 ];
 
 export const Header: React.FC<HeaderProps> = ({
