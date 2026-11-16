@@ -105,16 +105,18 @@ export const AiHeritageAssistant: React.FC<AiHeritageAssistantProps> = ({
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-[360px] max-w-[calc(100vw-2rem)] rounded-2xl bg-heritage-cream border border-heritage-gold shadow-2xl flex flex-col overflow-hidden">
-      <div className="bg-heritage-burgundy text-white px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Bot className="w-5 h-5 text-heritage-gold" />
+    <div className="fixed bottom-4 right-4 z-50 w-[370px] max-w-[calc(100vw-2rem)] rounded-2xl bg-heritage-paper border-2 border-heritage-gold shadow-2xl flex flex-col overflow-hidden">
+      <div className="bg-heritage-burgundy text-white px-4 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-full bg-heritage-gold text-heritage-burgundyDark flex items-center justify-center shrink-0">
+            <Bot className="w-5 h-5" />
+          </div>
           <div>
-            <div className="font-serif font-bold text-sm">
-              Trợ lý AI Hồn Việt Culture
+            <div className="font-serif font-bold text-sm text-[#FEF3C7]">
+              Trợ Lý AI Hồn Việt Culture
             </div>
-            <div className="text-[10px] text-white/80">
-              Tra cứu dữ liệu 5 tỉnh ĐBSCL
+            <div className="text-[10px] text-white/85">
+              Tra cứu tự động dữ liệu 5 tỉnh ĐBSCL
             </div>
           </div>
         </div>
@@ -127,7 +129,7 @@ export const AiHeritageAssistant: React.FC<AiHeritageAssistantProps> = ({
         </button>
       </div>
 
-      <div className="p-3 h-72 overflow-y-auto space-y-2.5 bg-heritage-paper/50">
+      <div className="p-3 h-72 overflow-y-auto space-y-2.5 bg-heritage-paper">
         {messages.map((m, idx) => (
           <div
             key={idx}
@@ -136,10 +138,10 @@ export const AiHeritageAssistant: React.FC<AiHeritageAssistantProps> = ({
             }`}
           >
             <div
-              className={`max-w-[85%] rounded-xl px-3 py-2 text-xs whitespace-pre-line leading-relaxed ${
+              className={`max-w-[85%] rounded-xl px-3.5 py-2.5 text-xs whitespace-pre-line leading-relaxed ${
                 m.sender === 'user'
                   ? 'bg-heritage-burgundy text-white'
-                  : 'bg-white border border-heritage-gold/35 text-heritage-ink'
+                  : 'bg-white border border-heritage-gold/70 text-heritage-ink shadow-sm'
               }`}
             >
               {m.text}

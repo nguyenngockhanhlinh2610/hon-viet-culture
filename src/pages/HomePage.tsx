@@ -116,7 +116,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             key={stat.label}
             type="button"
             onClick={() => onNavigate(stat.section)}
-            className="p-4 rounded-2xl bg-white border border-heritage-gold/35 text-left hover:border-heritage-burgundy hover:shadow-sm transition-all"
+            className="p-4 rounded-2xl bg-heritage-paper border-2 border-heritage-gold/60 text-left hover:border-heritage-burgundy hover:shadow-md transition-all"
           >
             <div className="font-serif text-2xl sm:text-3xl font-bold text-heritage-burgundy">
               {stat.num}
