@@ -90,12 +90,15 @@ export function App() {
       setBookings(refreshed);
     }
 
-    // Gửi email xác nhận về Admin qua Vercel Serverless Function
+    // Gửi email xác nhận về Admin qua Vercel Serverless Function (kèm lưu dự phòng nếu khách chưa đăng nhập)
     try {
       await fetch('/api/send-booking-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          userId: user?.id || null,
+          workshopId: input.workshopId,
+          provinceId: input.provinceId,
           workshopName: input.workshopName,
           date: input.date,
           timeSlot: input.timeSlot,
