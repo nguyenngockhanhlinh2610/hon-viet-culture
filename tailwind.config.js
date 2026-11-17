@@ -5,12 +5,12 @@ export default {
     extend: {
       colors: {
         heritage: {
-          burgundy: '#992626',
-          burgundyDark: '#5C0D0D',
-          gold: '#E5A93C',
+          burgundy: '#A3161A',
+          burgundyDark: '#6E0D11',
+          gold: '#D9A74A',
           amber: '#F3C669',
-          cream: '#FEF5CC',
-          paper: '#FFFDF5',
+          cream: '#FAF6EC',
+          paper: '#FFFFFF',
           ink: '#2C1E1A',
           muted: '#6B5B53',
         },

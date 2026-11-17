@@ -8,7 +8,7 @@
   }
 
   body {
-    background-color: #fef5cc;
+    background-color: #faf6ec;
     color: #2c1e1a;
   }
 
@@ -25,10 +25,10 @@
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #fdf0b8;
+  background: #f3ecda;
 }
 ::-webkit-scrollbar-thumb {
-  background: #8b1e1e;
+  background: #a3161a;
   border-radius: 9999px;
 }
 
@@ -37,9 +37,9 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    #e5a93c 25%,
-    #992626 50%,
-    #e5a93c 75%,
+    #d9a74a 25%,
+    #a3161a 50%,
+    #d9a74a 75%,
     transparent 100%
   );
 }

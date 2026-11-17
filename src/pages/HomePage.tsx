@@ -56,37 +56,49 @@ export const HomePage: React.FC<HomePageProps> = ({
   return (
     <div className="space-y-14">
       {/* Hero Banner */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-heritage-burgundy via-heritage-burgundyDark to-[#3D0709] text-heritage-cream p-7 sm:p-12 shadow-xl border border-heritage-gold/40">
-        {/* Subtle Dong Son concentric motif */}
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#9E1116] via-[#83231D] to-[#3B5B4A] text-heritage-cream p-7 sm:p-12 shadow-xl border border-heritage-gold/45">
+        {/* Dong Son Drum & Lac Bird Artistic Motif */}
         <svg
           aria-hidden="true"
-          viewBox="0 0 400 400"
-          className="pointer-events-none absolute -right-16 -top-16 w-80 h-80 sm:w-[420px] sm:h-[420px] text-heritage-gold/10"
+          viewBox="0 0 500 360"
+          className="pointer-events-none absolute right-0 top-0 h-full w-auto text-heritage-amber/20"
         >
-          <circle cx="200" cy="200" r="180" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 6" />
-          <circle cx="200" cy="200" r="140" fill="none" stroke="currentColor" strokeWidth="2" />
-          <circle cx="200" cy="200" r="95" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 4" />
-          <circle cx="200" cy="200" r="50" fill="none" stroke="currentColor" strokeWidth="2" />
+          <circle cx="360" cy="180" r="150" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 6" />
+          <circle cx="360" cy="180" r="115" fill="none" stroke="currentColor" strokeWidth="2" />
+          <circle cx="360" cy="180" r="78" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 4" />
+          <path
+            d="M170 280 Q240 200 320 230 T480 210 L480 360 L170 360 Z"
+            fill="currentColor"
+            opacity="0.18"
+          />
+          <path
+            d="M235 135 L295 155 L265 170 L325 185 L250 190 L215 215 L235 172 L190 165 Z"
+            fill="currentColor"
+            opacity="0.35"
+          />
         </svg>
 
         <div className="max-w-3xl relative z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-heritage-gold/20 border border-heritage-gold/60 text-heritage-gold text-xs font-semibold mb-5">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/20 border border-heritage-gold/60 text-[#FDE68A] text-xs font-semibold mb-4">
             <Sparkles className="w-3.5 h-3.5" />
-            Nền tảng số hóa văn hóa 5 tỉnh Đồng bằng sông Cửu Long
+            Di sản Vùng Đất Phù Sa 5 Tỉnh ĐBSCL
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl font-bold leading-tight text-white mb-4">
-            Hồn Việt Culture – Nơi Di Sản Giao Hòa Cùng Nhịp Sống Hiện Đại
+          <h1 className="font-serif text-3xl sm:text-5xl font-bold leading-tight text-white mb-2">
+            Hồn Việt Culture
           </h1>
-          <p className="text-sm sm:text-base text-heritage-cream/90 leading-relaxed mb-7 max-w-2xl">
-            Khám phá 20 di tích danh thắng, 11 đại lễ truyền thống, 26 đặc sản
-            vùng miền và đặt lịch trực tiếp 10 workshop làng nghề thủ công tại
-            Cần Thơ, Vĩnh Long, Đồng Tháp, An Giang, Cà Mau.
+          <p className="font-serif text-lg sm:text-2xl font-semibold text-[#FDE68A] leading-snug mb-4">
+            Số hóa di sản, kết nối cộng đồng - Nâng tầm văn hóa Việt
+          </p>
+          <p className="text-sm sm:text-base text-white/90 leading-relaxed mb-7 max-w-2xl">
+            Nền tảng số hóa di sản bảo tồn và phát huy giá trị văn hóa 5 tỉnh
+            thành trọng điểm Đồng bằng sông Cửu Long (Cần Thơ, Vĩnh Long, Đồng
+            Tháp, An Giang, Cà Mau).
           </p>
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={() => onNavigate('explore')}
-              className="px-5 py-3 rounded-xl bg-heritage-gold text-heritage-ink font-semibold text-sm hover:bg-heritage-amber transition-colors inline-flex items-center gap-2 shadow-md"
+              className="px-5 py-3 rounded-xl bg-gradient-to-r from-heritage-gold to-heritage-amber text-heritage-burgundyDark font-bold text-sm hover:brightness-105 transition-all inline-flex items-center gap-2 shadow-md"
             >
               <Compass className="w-4 h-4" />
               <span>Khám phá Di sản ngay</span>
@@ -94,9 +106,9 @@ export const HomePage: React.FC<HomePageProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('passport')}
-              className="px-5 py-3 rounded-xl bg-white/10 border border-heritage-gold/60 text-white font-semibold text-sm hover:bg-white/20 transition-colors inline-flex items-center gap-2"
+              className="px-5 py-3 rounded-xl bg-black/20 border border-heritage-gold/60 text-white font-semibold text-sm hover:bg-black/30 transition-colors inline-flex items-center gap-2"
             >
-              <Stamp className="w-4 h-4 text-heritage-gold" />
+              <Stamp className="w-4 h-4 text-[#FDE68A]" />
               <span>Hộ Chiếu Săn Dấu ({unlockedCount}/10)</span>
             </button>
           </div>
