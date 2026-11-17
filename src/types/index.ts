@@ -51,6 +51,8 @@ export interface HeritageSite {
   description: string;
   bestSeason: SeasonTag;
   address: string;
+  coordinates?: { lat: number; lng: number };
+  rating?: number;
   image: string;
   tags: string[];
   relatedWorkshopIds?: string[];
@@ -61,11 +63,13 @@ export interface Festival {
   slug: string;
   provinceId: ProvinceId;
   name: string;
+  location?: string;
   timeLabel: string;
   lunarMonth?: number;
   recognition?: string;
   summary: string;
   rituals: string[];
+  coordinates?: { lat: number; lng: number };
   image: string;
   tags: string[];
 }
@@ -94,6 +98,7 @@ export interface Workshop {
   priceVnd: number;
   summary: string;
   activities: string[];
+  coordinates?: { lat: number; lng: number };
   image: string;
   tags: string[];
 }

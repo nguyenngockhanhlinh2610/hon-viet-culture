@@ -62,8 +62,13 @@ export const ProvinceModal: React.FC<ProvinceModalProps> = ({
             <h2 className="font-serif text-2xl sm:text-3xl font-bold">
               {province.name}
             </h2>
-            <p className="text-xs sm:text-sm text-white/85 flex items-center gap-1.5 mt-1">
-              <MapPin className="w-3.5 h-3.5 text-heritage-gold" />
+            <p className="text-xs sm:text-sm text-white/85 flex flex-wrap items-center gap-2 mt-1">
+              <span className="inline-flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5 text-heritage-gold" />
+                {province.coordinates.lat.toFixed(4)}° N,{' '}
+                {province.coordinates.lng.toFixed(4)}° E
+              </span>
+              <span>·</span>
               <span>Thời điểm đẹp nhất: {province.bestSeason}</span>
             </p>
           </div>

@@ -160,9 +160,22 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
               <p className="text-sm text-heritage-ink leading-relaxed">
                 {activeSite.description}
               </p>
-              <div className="text-xs text-heritage-muted flex items-center gap-1.5 pt-2">
-                <MapPin className="w-4 h-4 text-heritage-burgundy shrink-0" />
-                <span>{activeSite.address}</span>
+              <div className="text-xs text-heritage-muted flex flex-wrap items-center gap-2 pt-2">
+                <span className="inline-flex items-center gap-1">
+                  <MapPin className="w-4 h-4 text-heritage-burgundy shrink-0" />
+                  <span>{activeSite.address}</span>
+                </span>
+                {activeSite.coordinates && (
+                  <a
+                    href={`https://www.google.com/maps?q=${activeSite.coordinates.lat},${activeSite.coordinates.lng}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-heritage-burgundy font-semibold hover:underline"
+                  >
+                    ({activeSite.coordinates.lat.toFixed(4)}° N,{' '}
+                    {activeSite.coordinates.lng.toFixed(4)}° E · Xem bản đồ)
+                  </a>
+                )}
               </div>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {activeSite.tags.map((tag) => (
