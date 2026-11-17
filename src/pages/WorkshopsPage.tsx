@@ -5,6 +5,7 @@ import { PROVINCES } from '../data/provinces';
 import { Booking, FavoriteCategory, ProvinceId, Workshop } from '../types';
 import { ProvinceFilterBar } from '../components/common/ProvinceFilterBar';
 import { ImageWithFallback } from '../components/common/ImageWithFallback';
+import { formatDateVN } from '../utils/date';
 
 interface WorkshopsPageProps {
   isFavorite: (id: string, category: FavoriteCategory) => boolean;
@@ -63,7 +64,7 @@ export const WorkshopsPage: React.FC<WorkshopsPageProps> = ({
     });
 
     setSuccessMsg(
-      `Đã gửi yêu cầu đặt lịch "${bookingWorkshop.name}" ngày ${date} lúc ${timeSlot}! Lịch hẹn đang ở trạng thái Chờ xác nhận.`
+      `Đã gửi yêu cầu đặt lịch "${bookingWorkshop.name}" ngày ${formatDateVN(date)} lúc ${timeSlot}! Lịch hẹn đang ở trạng thái Chờ xác nhận.`
     );
     setBookingWorkshop(null);
   };
@@ -254,7 +255,7 @@ export const WorkshopsPage: React.FC<WorkshopsPageProps> = ({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium mb-1">
-                  Ngày trải nghiệm
+                  Ngày trải nghiệm ({formatDateVN(date)})
                 </label>
                 <input
                   type="date"

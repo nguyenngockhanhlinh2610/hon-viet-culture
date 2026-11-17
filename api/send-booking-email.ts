@@ -52,6 +52,12 @@ export default async function handler(req: VercelReq, res: VercelRes) {
     process.env.SITE_URL ||
     (host ? `https://${host}` : 'https://hon-viet-culture.vercel.app');
 
+  const formatDateVN = (iso?: string) => {
+    if (!iso || !iso.includes('-')) return iso || '';
+    const [y, m, d] = iso.split('T')[0].split('-');
+    return y && m && d ? `${d}/${m}/${y}` : iso;
+  };
+
   const approveUrl = `${baseUrl}/api/confirm-booking?token=${encodeURIComponent(
     approvalToken
   )}&action=approve`;
@@ -68,7 +74,7 @@ export default async function handler(req: VercelReq, res: VercelRes) {
         <p>Có khách hàng vừa đặt lịch trải nghiệm làng nghề mới:</p>
         <ul style="background: #FFFFFF; border: 1px solid #E5D4A1; border-radius: 10px; padding: 14px 20px; list-style: none; margin: 16px 0;">
           <li><strong>Workshop:</strong> ${workshopName}</li>
-          <li><strong>Ngày &amp; Giờ:</strong> ${date} lúc ${timeSlot}</li>
+          <li><strong>Ngày &amp; Giờ:</strong> ${formatDateVN(date)} lúc ${timeSlot}</li>
           <li><strong>Số khách:</strong> ${guests} khách</li>
           <li><strong>Khách hàng:</strong> ${customerName}</li>
           <li><strong>Số điện thoại:</strong> ${customerPhone}</li>

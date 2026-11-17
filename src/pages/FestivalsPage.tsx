@@ -15,6 +15,7 @@ import { PROVINCES } from '../data/provinces';
 import { FavoriteCategory, Festival, ProvinceId } from '../types';
 import { ProvinceFilterBar } from '../components/common/ProvinceFilterBar';
 import { ImageWithFallback } from '../components/common/ImageWithFallback';
+import { formatDateVN } from '../utils/date';
 
 interface FestivalsPageProps {
   isFavorite: (id: string, category: FavoriteCategory) => boolean;
@@ -198,7 +199,7 @@ export const FestivalsPage: React.FC<FestivalsPageProps> = ({
                       <div className="flex items-center gap-2">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold">
                           <BellRing className="w-3.5 h-3.5" />
-                          Đã nhắc ({remindedDate})
+                          Đã nhắc ({formatDateVN(remindedDate)})
                         </span>
                         <button
                           type="button"

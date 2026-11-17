@@ -3,6 +3,7 @@ import { CalendarX2, LogOut, UserCheck } from 'lucide-react';
 import { Booking, UserProfile } from '../types';
 import { storageService } from '../services/storageService';
 import { isSupabaseConfigured } from '../lib/supabaseClient';
+import { formatDateVN } from '../utils/date';
 
 interface AccountPageProps {
   user: UserProfile | null;
@@ -252,7 +253,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                         </span>
                       </div>
                       <p className="text-xs text-heritage-muted mt-1">
-                        Ngày {bk.date} · {bk.timeSlot} · {bk.guests} khách ·{' '}
+                        Ngày {formatDateVN(bk.date)} · {bk.timeSlot} · {bk.guests} khách ·{' '}
                         {bk.customerName} ({bk.customerPhone})
                       </p>
                     </div>

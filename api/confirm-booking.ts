@@ -119,13 +119,18 @@ export default async function handler(req: VercelReq, res: VercelRes) {
     }
 
     const bk = updatedRows[0];
+    const formatDateVN = (iso?: string) => {
+      if (!iso || !iso.includes('-')) return iso || '';
+      const [y, m, d] = iso.split('T')[0].split('-');
+      return y && m && d ? `${d}/${m}/${y}` : iso;
+    };
     const title =
       nextStatus === 'confirmed'
         ? 'Đã đồng ý lịch hẹn thành công!'
         : 'Đã từ chối lịch hẹn';
     const msg =
       nextStatus === 'confirmed'
-        ? `Lịch hẹn "${bk.workshop_name}" của khách ${bk.customer_name} (ngày ${bk.booking_date} lúc ${bk.time_slot}) đã được cập nhật sang trạng thái ĐÃ XÁC NHẬN.`
+        ? `Lịch hẹn "${bk.workshop_name}" của khách ${bk.customer_name} (ngày ${formatDateVN(bk.booking_date)} lúc ${bk.time_slot}) đã được cập nhật sang trạng thái ĐÃ XÁC NHẬN.`
         : `Lịch hẹn "${bk.workshop_name}" của khách ${bk.customer_name} đã được chuyển sang trạng thái TỪ CHỐI.`;
 
     const r = res.status(200);
